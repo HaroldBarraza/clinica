@@ -6,4 +6,4 @@ const router:Router = Router()
 router.get("/", getUsers)
 
 
-export default router
+export default router 

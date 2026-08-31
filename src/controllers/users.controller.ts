@@ -9,4 +9,4 @@ export const getUsers = async(req: Request, res: Response):Promise<void> => {
     } catch (error_any) {
         res.status(500).json({error: "hubo un error con la bases"})
     }
-}
+}  

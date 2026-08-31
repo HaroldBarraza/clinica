@@ -14,4 +14,4 @@ app.use("/users", routeruser)
 
 app.listen(PORT, () => {
     console.log(`la api esta corriendo correctamente en el http://localhost:${PORT}`);
-})
+}) 
