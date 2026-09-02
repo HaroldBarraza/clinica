@@ -81,6 +81,7 @@ model citas {
   id_cita Int @id @default(autoincrement())
   id_paciente Int
   pacientes pacientes @relation(fields: [id_paciente], references: [id_paciente])
+  descripcion String @default("no hay descripcion")
   id_medico Int
   medico users @relation("medico_citas" ,fields: [id_medico], references: [id_empleado])
   id_estado Int
