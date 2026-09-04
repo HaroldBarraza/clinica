@@ -1,0 +1,1111 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Clinica",
+    "description": "Documentación automática generada para el bootcamp",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://Localhost:3000/"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authenticacion"
+        ],
+        "summary": "Registrar un nuevo empleado",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "example@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "GERENCIA"
+                  },
+                  "name_empleado": {
+                    "type": "string",
+                    "example": "Carlos"
+                  },
+                  "appaterno": {
+                    "type": "string",
+                    "example": "Garcia"
+                  },
+                  "appmaterno": {
+                    "type": "string",
+                    "example": "Perez"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "example": "987654321"
+                  },
+                  "id_especialidad": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "role",
+                  "name_empleado"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authenticacion"
+        ],
+        "summary": "para loguear un nuevo empleado",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "example1@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Obtener todos los empleados",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/medicos": {
+      "get": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Obtener los medicos segun especialidad ",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "especialidad",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": [
+          "Empleados"
+        ],
+        "summary": "Actualizar datos de un empleado (solo el propio usuario)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del empleado a actualizar"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "nuevo@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "nuevaClave123"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "RECEPCIONISTA",
+                      "MEDICO",
+                      "GERENCIA"
+                    ],
+                    "example": "MEDICO"
+                  },
+                  "name_empleado": {
+                    "type": "string",
+                    "example": "Carlos"
+                  },
+                  "appaterno": {
+                    "type": "string",
+                    "example": "García"
+                  },
+                  "appmaterno": {
+                    "type": "string",
+                    "example": "Pérez"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "example": "987654321"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pacientes/": {
+      "get": {
+        "tags": [
+          "Pacientes"
+        ],
+        "summary": "Obtener todos los pacientes",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Pacientes"
+        ],
+        "summary": "Crear nuevo paciente",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name_paciente": {
+                    "type": "string",
+                    "example": "Valeria"
+                  },
+                  "appaterno_paciente": {
+                    "type": "string",
+                    "example": "Paredes"
+                  },
+                  "apmaterno_paciente": {
+                    "type": "string",
+                    "example": "Rodriguez"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "example@example.com"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "example": "987654321"
+                  },
+                  "fecha_nacimiento": {
+                    "type": "date",
+                    "example": "2000-12-20"
+                  },
+                  "genero": {
+                    "type": "string",
+                    "example": "FEMENINO"
+                  }
+                },
+                "required": [
+                  "name_paciente",
+                  "appaterno_paciente",
+                  "apmaterno_paciente",
+                  "email",
+                  "telefono",
+                  "fecha_nacimiento",
+                  "genero"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pacientes/{id}": {
+      "get": {
+        "tags": [
+          "Pacientes"
+        ],
+        "summary": "obtener Pacient por id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del paciente"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Pacientes"
+        ],
+        "summary": "Actualizar datos de un paciente (todos los campos opcionales)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del paciente a actualizar"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name_paciente": {
+                    "type": "string",
+                    "example": "María"
+                  },
+                  "appaterno_paciente": {
+                    "type": "string",
+                    "example": "López"
+                  },
+                  "apmaterno_paciente": {
+                    "type": "string",
+                    "example": "García"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "maria@email.com"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "example": "987654321"
+                  },
+                  "fecha_nacimiento": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1995-05-15"
+                  },
+                  "genero": {
+                    "type": "string",
+                    "enum": [
+                      "MASCULINO",
+                      "FEMENINO"
+                    ],
+                    "example": "FEMENINO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/estadocita/": {
+      "get": {
+        "tags": [
+          "Estado de citas"
+        ],
+        "summary": "Obtener los estado de citas",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/especialidad/": {
+      "get": {
+        "tags": [
+          "Especialidad"
+        ],
+        "summary": "Obtener especiliadades",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Especialidad"
+        ],
+        "summary": "Crear especiliadad",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name_especialidad": {
+                    "type": "number",
+                    "example": "Cardiologia"
+                  },
+                  "descripcion_especialidad": {
+                    "type": "number",
+                    "example": "Se centra en corazon"
+                  }
+                },
+                "required": [
+                  "name_especialidad",
+                  "descripcion_especialidad"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/citas/doctor": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Filtra las citas de un doctor",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha_inicio",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha_final",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/citas/boss": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Filtra segun la especialidad",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "especialidad",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha_inicio",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/citas/estado": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Filtra citas Canceladas y Completas por dia",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/citas/": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Obtiene todas las citas",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Crear una cita",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_paciente": {
+                    "type": "number",
+                    "example": "1"
+                  },
+                  "id_medico": {
+                    "type": "number",
+                    "example": "1"
+                  },
+                  "fecha_de_cita": {
+                    "type": "date",
+                    "example": "2026-10-30"
+                  },
+                  "hora_de_cita": {
+                    "type": "time",
+                    "example": "13:00"
+                  },
+                  "descripcion": {
+                    "type": "string",
+                    "example": "Presento dolor de cabeza"
+                  },
+                  "creado_por": {
+                    "type": "number",
+                    "example": "1"
+                  }
+                },
+                "required": [
+                  "id_paciente",
+                  "id_medico",
+                  "fecha",
+                  "hora",
+                  "descripcion",
+                  "creado_por"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/citas/{id}": {
+      "put": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Actualizar el estado de una cita",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID de la cita"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "estado": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                },
+                "required": [
+                  "estado"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/citas/reporte": {
+      "get": {
+        "tags": [
+          "urgente"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha_inicio",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fecha_final",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

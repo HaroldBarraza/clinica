@@ -1,9 +1,31 @@
 import { Router } from "express";
-import { getall } from "../controllers/especialidad.controllers";
+import {
+  createespecialidad,
+  getall,
+} from "../controllers/especialidad.controllers";
+import { crear_especialidadschema } from "../schemas/especialidad.schemas";
+import { validardatos } from "../middleware/validardatos";
+import { verifyToken } from "../middleware/auth.middleware";
+import { authorize } from "../middleware/authorize.middleware";
 
-const router:Router = Router()
+const router: Router = Router();
 
-router.get("/", getall)
+router.get(
+  "/",
+  verifyToken,
+  getall,
+  /* #swagger.security = [{
+            "bearerAuth": []
+    }] */
+);
+router.post(
+  "/",
+  verifyToken,
+  authorize("GERENCIA", "RECEPCIONISTA"),
+  validardatos(crear_especialidadschema),
+  createespecialidad /* #swagger.security = [{
+            "bearerAuth": []
+    }] */,
+);
 
-
-export default router
+export default router;
