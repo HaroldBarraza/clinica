@@ -32,7 +32,7 @@ model users{
   appaterno String
   appmaterno String
   telefono String
-  email String
+  email String @unique
   password String
   role role 
   id_especialidad Int?
@@ -84,10 +84,11 @@ model citas {
   descripcion String @default("no hay descripcion")
   id_medico Int
   medico users @relation("medico_citas" ,fields: [id_medico], references: [id_empleado])
-  id_estado Int
+  id_estado Int @default(1)
   estado estado_citas @relation(fields: [id_estado], references: [id_estado])
-  fecha_creacion DateTime @default(now())
-  fecha_hora DateTime
+  fecha_creacion DateTime @db.Date @default(now())
+  fecha_de_cita DateTime @db.Date @default(now())
+  hora_de_cita DateTime @db.Time(0) @default(now())
   creado_por Int
   users users @relation("creador_citas" ,fields: [creado_por], references: [id_empleado])
   @@map("citas")

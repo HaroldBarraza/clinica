@@ -1,10 +1,13 @@
-import type { role } from "../../prisma/generated/prisma/enums";
+import type { role } from "../../prisma/generated/prisma/client";
 import prisma from "../config/prisma";
+import { Prisma } from "../../prisma/generated/prisma/client";
 
 export const usersModels = {
   findall: async () => {
     return await prisma.users.findMany({
-      orderBy: { id_empleado: "asc" },
+      omit: {
+        password: true,
+      },
     });
   },
 
@@ -13,7 +16,10 @@ export const usersModels = {
       where: {
         role: "MEDICO",
         especialidades: {
-          name_especialidad: especiadadNombre,
+          name_especialidad: {
+            equals: especiadadNombre,
+            mode: "insensitive",
+          },
         },
       },
       select: {
@@ -30,28 +36,21 @@ export const usersModels = {
       },
     });
   },
-
-  create: async (
-    name_empleado: string,
-    appaterno: string,
-    appmaterno: string,
-    email: string,
-    id_especialidad: number,
-    password: string,
-    role: role,
-    telefono: string,
+  update: async (
+    id_empleado: number,
+    data: Partial<Omit<Prisma.usersCreateInput, "id_empleado">>,
   ) => {
-    return await prisma.users.create({
-      data: {
-        name_empleado,
-        appaterno,
-        appmaterno,
-        email,
-        id_especialidad,
-        password,
-        role,
-        telefono,
+    return await prisma.users.update({
+      where: { id_empleado },
+      data,
+    });
+  },
+    findbyIdUsers: async (id: number) => {
+    return await prisma.users.findFirst({
+      where: {
+        id_empleado: id,
       },
     });
   },
+
 };
