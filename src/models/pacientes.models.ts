@@ -8,6 +8,10 @@ const formatDate = (date: Date | string | null): string | null => {
   if (!date) return null;
   return format(new Date(date), "dd/MM/yyyy", { locale: es });
 };
+const formatTime = (time: Date | string | null): string | null => {
+  if (!time) return null;
+  return format(new Date(time), "HH:mm", { locale: es });
+};
 
 export const pacienteModels = {
   findall: async () => {
@@ -61,4 +65,57 @@ export const pacienteModels = {
       data,
     });
   },
+
+  findWithCitas: async (id: number) => {
+    const paciente = await prisma.pacientes.findUnique({
+      where: { id_paciente: id },
+      include: {
+        citas: {
+          orderBy: { fecha_de_cita: "desc" },
+          include: {
+            medico: {
+              select: {
+                name_empleado: true,
+                appaterno: true,
+                especialidades: {
+                  select: {
+                    name_especialidad: true,
+                  },
+                },
+              },
+            },
+            estado: {
+              select: {
+                name_estado: true,
+              },
+            },
+            users: {
+              select: {
+                name_empleado: true,
+                appaterno: true,
+                role: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!paciente) return null;
+
+    const citasFormateadas = paciente.citas.map((cita) => ({
+      ...cita,
+      fecha_de_cita: formatDate(cita.fecha_de_cita),
+      hora_de_cita: formatTime(cita.hora_de_cita),
+      fecha_creacion: formatDate(cita.fecha_creacion),
+    }));
+
+    return {
+      ...paciente,
+      fecha_nacimiento: formatDate(paciente.fecha_nacimiento),
+      fecha_registro: formatDate(paciente.fecha_registro),
+      citas: citasFormateadas,
+    };
+  },
 };
+

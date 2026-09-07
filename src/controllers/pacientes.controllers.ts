@@ -176,3 +176,45 @@ export const updatepaciente = async (
       .json({ error: "error al actualizar la informacion del pasciente" });
   }
 };
+
+
+export const getPacienteCitas = async (req: Request, res: Response): Promise<void> => {
+  /*
+  #swagger.tags = ['Pacientes']
+  #swagger.summary = 'Obtener todas las citas de un paciente'
+  #swagger.parameters['id'] = {
+    in: 'path',
+    description: 'ID del paciente',
+    required: true,
+    type: 'integer',
+    example: 1
+  }
+  */
+
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: "El ID debe ser un número válido." });
+      return;
+    }
+
+    const pacienteConCitas = await pacienteModels.findWithCitas(id);
+
+    if (!pacienteConCitas) {
+      res.status(404).json({ error: `Paciente con ID ${id} no encontrado.` });
+      return;
+    }
+
+    if (pacienteConCitas.citas.length === 0) {
+      res.status(200).json({
+        message: `El paciente "${pacienteConCitas.name_paciente} ${pacienteConCitas.appaterno_paciente}" no tiene citas registradas.`,
+        data: pacienteConCitas
+      });
+      return;
+    }
+
+    res.status(200).json({ data: pacienteConCitas });
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener las citas del paciente." });
+  }
+};

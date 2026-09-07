@@ -4,6 +4,7 @@ import {
   createpacientes,
   findbyid,
   updatepaciente,
+  getPacienteCitas,
 } from "../controllers/pacientes.controllers";
 import {
   crear_pacienteschema,
@@ -44,10 +45,17 @@ router.put(
   verifyToken,
   authorize("GERENCIA", "RECEPCIONISTA"),
   validardatos(updatepacienteschema),
-  updatepaciente
+  updatepaciente,
   /* #swagger.security = [{
             "bearerAuth": []
-    }] */,
+    }] */
+);
+router.get(
+  "/:id/citas",
+  verifyToken,
+  authorize("GERENCIA", "RECEPCIONISTA", "MEDICO"),
+  getPacienteCitas,
+  /* #swagger.security = [{ "bearerAuth": [] }] */
 );
 
 export default router;

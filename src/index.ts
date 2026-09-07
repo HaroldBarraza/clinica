@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"
 import routeruser from "./routes/users.routes";
 import routerpacientes from "./routes/pacientes.routes";
 import routerestado_cita from "./routes/estado_cita.routes";
@@ -13,6 +14,12 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+  origin: "*",
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 app.use(express.json());
 
