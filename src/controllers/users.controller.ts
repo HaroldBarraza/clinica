@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { usersModels } from "../models/users.models";
 import { error } from "node:console";
+import prisma from "../config/prisma";
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   /* 
@@ -28,10 +29,26 @@ export const getmedicosbyespecialidad = async (
   try {
     if (!especialidad || typeof especialidad !== "string") {
       res.status(400).json({ error: "hubo un error" });
-    } else {
-      const resultado = await usersModels.findfilterespecialidad(especialidad);
-      res.json({ data: resultado });
     }
+    const existe = await prisma.especialidades.findFirst({
+      where: {
+        name_especialidad: {
+          equals: especialidad,
+          mode: "insensitive",
+        },
+      },
+    });
+    if (!existe) {
+      res.status(400).json({ error: "la especialidad no existe " });
+      return;
+    }
+
+    const resultado = await usersModels.findfilterespecialidad(especialidad);
+    if (resultado.length === 0) {
+      res.status(200).json({ message: "no hay medicos con esta especialidad" });
+      return;
+    }
+    res.json({ data: resultado });
   } catch (error) {}
 };
 
@@ -74,10 +91,17 @@ export const updateuser = async (
       res.status(400).json({ error: "el id tiene que se un numero valido" });
       return;
     }
+    const existe = await usersModels.findbyIdUsers(id_empleado);
+    if (!existe) {
+      res.status(400).json({ error: "el empleado con este id no existe" });
+      return;
+    }
     const usuarioAuth = req.user;
 
     if (!usuarioAuth || usuarioAuth.id !== id_empleado) {
-      res.status(400).json({ error: "solo puede actulizar tu propio usuario" });
+      res.status(400).json({
+        error: `solo puede actulizar tu propio usuario, tu id es ${usuarioAuth?.id}`,
+      });
       return;
     }
 

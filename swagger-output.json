@@ -776,6 +776,9 @@
           {
             "name": "especialidad",
             "in": "query",
+            "description": "Nombre de la especialidad",
+            "required": true,
+            "example": "Cardiología",
             "schema": {
               "type": "string"
             }
@@ -783,6 +786,9 @@
           {
             "name": "fecha_inicio",
             "in": "query",
+            "description": "Fecha a consultar (formato YYYY-MM-DD)",
+            "required": true,
+            "example": "2026-09-10",
             "schema": {
               "type": "string"
             }
@@ -830,6 +836,9 @@
           {
             "name": "fecha",
             "in": "query",
+            "description": "Fecha en formato YYYY-MM-DD",
+            "required": true,
+            "example": "2026-08-28",
             "schema": {
               "type": "string"
             }
@@ -1049,8 +1058,9 @@
     "/citas/reporte": {
       "get": {
         "tags": [
-          "urgente"
+          "Citas"
         ],
+        "summary": "Reporte de cantidad de citas agrupadas por especialidad en un rango de fechas para gerencia",
         "description": "",
         "parameters": [
           {
@@ -1063,6 +1073,9 @@
           {
             "name": "fecha_inicio",
             "in": "query",
+            "description": "Fecha de inicio (formato YYYY-MM-DD o YYYY/MM/DD)",
+            "required": true,
+            "example": "2026-08-01",
             "schema": {
               "type": "string"
             }
@@ -1070,6 +1083,9 @@
           {
             "name": "fecha_final",
             "in": "query",
+            "description": "Fecha de fin (formato YYYY-MM-DD o YYYY/MM/DD)",
+            "required": true,
+            "example": "2026-09-30",
             "schema": {
               "type": "string"
             }

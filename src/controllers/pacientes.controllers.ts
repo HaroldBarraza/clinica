@@ -33,6 +33,10 @@ type: 'integer'
   try {
     const id = Number(req.params.id);
     const resultado = await pacienteModels.findbyId(id);
+    if(!resultado){
+      res.status(400).json({error: "el paciente con este id no existe"})
+      return
+    }
     res.status(201).json({ data: resultado });
   } catch (error) {
     res.status(500).json({ error: "error al obtener todos los pacientes" });

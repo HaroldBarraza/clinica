@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import { citasModels } from "../models/citas.models";
+import prisma from "../config/prisma";
+import { error } from "node:console";
 
 export const getall = async (req: Request, res: Response): Promise<void> => {
   /* 
@@ -41,7 +43,6 @@ example: '2026-12-30'
 
 */
   try {
-    //obetener fecha de medico para mostrarle las citas del doctor
     const { fecha_inicio, fecha_final } = req.query;
     const id_empleado = req.user?.id;
     if (!fecha_inicio || !fecha_final) {
@@ -68,6 +69,10 @@ example: '2026-12-30'
       fechainicio,
       fechafinal,
     );
+    if(resultado.length === 0 ){
+      res.status(200).json({message:"no tiene citas programadas"})
+      return
+    }
     res.json({ data: resultado });
   } catch (error) {
     res.status(500).json({ message: "error al filtrar por doctor" });
@@ -81,6 +86,20 @@ export const filterforboss = async (
   /* 
 #swagger.tags = ['Citas']
 #swagger.summary = 'Filtra segun la especialidad'
+#swagger.parameters['especialidad'] = {
+  in: 'query',
+  description: 'Nombre de la especialidad',
+  required: true,
+  type: 'string',
+  example: 'Cardiología'
+}
+#swagger.parameters['fecha_inicio'] = {
+  in: 'query',
+  description: 'Fecha a consultar (formato YYYY-MM-DD)',
+  required: true,
+  type: 'string',
+  example: '2026-09-10'
+}
 
 
 */
@@ -97,7 +116,25 @@ export const filterforboss = async (
         .json({ error: "el formato de la fecha es incorrecto YYYY-MM-DD" });
       return;
     }
+
+    const existe = await prisma.especialidades.findFirst({
+      where:{
+        name_especialidad:{
+          equals: especialidad,
+          mode: "insensitive"
+        }
+      }
+    })
+
+    if(!existe){
+      res.status(400).json({error: "la especialidad no exite"})
+      return
+    }
     const resultado = await citasModels.filterforboss(especialidad, fecha);
+    if(resultado.length === 0){
+      res.status(200).json({message: "no hay citas para esta especialidad"})
+      return
+    }
     res.json({ data: resultado });
   } catch (error) {
     res.status(500).json({ message: "error al filtrar los datos" });
@@ -111,7 +148,13 @@ export const filtrarestado = async (
   /* 
 #swagger.tags = ['Citas']
 #swagger.summary = 'Filtra citas Canceladas y Completas por dia'
-
+#swagger.parameters['fecha'] = {
+  in: 'query',
+  description: 'Fecha en formato YYYY-MM-DD',
+  required: true,
+  type: 'string',
+  example: '2026-08-28'
+}
 
 */
 
@@ -128,6 +171,10 @@ export const filtrarestado = async (
         .json({ error: "el formato la hora es invalido YYYY-MM-DD" });
     }
     const resultado = await citasModels.filtrarcitasestado(fechainicio);
+    if(resultado.total === 0){
+      res.json({message: "no se encontraron citas "})
+      return
+    }
     res.json({ data: resultado });
   } catch (error) {
     res.status(500).json({ message: "erro al filtrar por estado" });
@@ -243,7 +290,22 @@ export const filtrosestadoresporte = async (
   res: Response,
 ): Promise<void> => {
   /*   
-#swagger.tags = ['urgente']
+#swagger.tags = ['Citas']
+#swagger.summary = 'Reporte de cantidad de citas agrupadas por especialidad en un rango de fechas para gerencia'
+#swagger.parameters['fecha_inicio'] = {
+  in: 'query',
+  description: 'Fecha de inicio (formato YYYY-MM-DD o YYYY/MM/DD)',
+  required: true,
+  type: 'string',
+  example: '2026-08-01'
+}
+#swagger.parameters['fecha_final'] = {
+  in: 'query',
+  description: 'Fecha de fin (formato YYYY-MM-DD o YYYY/MM/DD)',
+  required: true,
+  type: 'string',
+  example: '2026-09-30'
+}
 
  */ try {
     const { fecha_inicio, fecha_final } = req.query;
@@ -267,6 +329,10 @@ export const filtrosestadoresporte = async (
     }
 
     const resultado = await citasModels.filtrarporespecialidad(inicio, final);
+    if(resultado.length === 0){
+      res.json({message: "no hay citas existentes"})
+      return
+    }
     res.json({ data: resultado });
   } catch (error) {
     res.status(500).json({ message: "error al filtrar por estado" });
