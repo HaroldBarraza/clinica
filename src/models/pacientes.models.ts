@@ -117,5 +117,10 @@ export const pacienteModels = {
       citas: citasFormateadas,
     };
   },
+  deletepacientes: async (id:number) =>{
+    return await prisma.pacientes.delete({
+      where: {id_paciente : id}
+    })
+  }
 };
 

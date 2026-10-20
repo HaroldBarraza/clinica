@@ -5,6 +5,7 @@ import {
   findbyid,
   updatepaciente,
   getPacienteCitas,
+  deletepacientes,
 } from "../controllers/pacientes.controllers";
 import {
   crear_pacienteschema,
@@ -56,6 +57,13 @@ router.get(
   authorize("GERENCIA", "RECEPCIONISTA", "MEDICO"),
   getPacienteCitas,
   /* #swagger.security = [{ "bearerAuth": [] }] */
+);
+
+router.delete(
+  "/:id",
+  verifyToken,
+  authorize("GERENCIA"),
+  deletepacientes /* #swagger.security = [{ "bearerAuth": [] }] */,
 );
 
 export default router;

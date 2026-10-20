@@ -80,7 +80,7 @@ export async function login(req: Request, res: Response) {
       schema: {
         type: 'object',
         properties: {
-          email: { type: 'string', example: 'example1@example.com' },
+          email: { type: 'string', example: 'roberto.hernandez@hospital.com' },
           password: { type: 'string', example: '123456' },
         },
         required: ['email', 'password']

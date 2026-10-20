@@ -11,30 +11,33 @@ export const usersModels = {
     });
   },
 
-  findfilterespecialidad: async (especiadadNombre: string) => {
-    return await prisma.users.findMany({
-      where: {
-        role: "MEDICO",
+  findfilterespecialidad: async (especiadadNombre?: string) => {
+   return await prisma.users.findMany({
+    where: {
+      role: "MEDICO",
+      ...(especiadadNombre && {
         especialidades: {
           name_especialidad: {
             equals: especiadadNombre,
             mode: "insensitive",
           },
         },
-      },
-      select: {
-        name_empleado: true,
-        appaterno: true,
-        appmaterno: true,
-        email: true,
-        especialidades: {
-          select: {
-            name_especialidad: true,
-          },
+      }),
+    },
+    select: {
+      id_empleado: true,              
+      name_empleado: true,
+      appaterno: true,
+      appmaterno: true,
+      email: true,
+      especialidades: {
+        select: {
+          name_especialidad: true,
         },
-        telefono: true,
       },
-    });
+      telefono: true,
+    },
+  });
   },
   update: async (
     id_empleado: number,

@@ -20,6 +20,9 @@
     "build": "tsc",
     "start": "tsx dist/index.js"
   },
+  "prisma":{
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",

@@ -19,17 +19,20 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 export const getmedicosbyespecialidad = async (
   req: Request,
   res: Response,
-): Promise<void> => {
+) => {
   /* 
 #swagger.tags = ['Empleados']
 #swagger.summary = 'Obtener los medicos segun especialidad '
 */
 
-  const especialidad = req.query.especialidad as string;
-  try {
-    if (!especialidad || typeof especialidad !== "string") {
-      res.status(400).json({ error: "hubo un error" });
-    }
+const especialidad = req.query.especialidad as string | undefined;
+
+try {
+  if (especialidad && typeof especialidad !== "string") {
+    return res.status(400).json({ error: "Parámetro inválido" });
+  }
+
+  if (especialidad) {
     const existe = await prisma.especialidades.findFirst({
       where: {
         name_especialidad: {
@@ -39,17 +42,17 @@ export const getmedicosbyespecialidad = async (
       },
     });
     if (!existe) {
-      res.status(400).json({ error: "la especialidad no existe " });
-      return;
+      return res.status(404).json({ error: "La especialidad no existe" });
     }
+  }
 
-    const resultado = await usersModels.findfilterespecialidad(especialidad);
-    if (resultado.length === 0) {
-      res.status(200).json({ message: "no hay medicos con esta especialidad" });
-      return;
-    }
-    res.json({ data: resultado });
-  } catch (error) {}
+  const resultado = await usersModels.findfilterespecialidad(especialidad);
+
+  return res.status(200).json({ datos: resultado });
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ error: "Error interno del servidor" });
+}
 };
 
 export const updateuser = async (

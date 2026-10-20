@@ -33,9 +33,9 @@ type: 'integer'
   try {
     const id = Number(req.params.id);
     const resultado = await pacienteModels.findbyId(id);
-    if(!resultado){
-      res.status(400).json({error: "el paciente con este id no existe"})
-      return
+    if (!resultado) {
+      res.status(400).json({ error: "el paciente con este id no existe" });
+      return;
     }
     res.status(201).json({ data: resultado });
   } catch (error) {
@@ -146,9 +146,9 @@ export const updatepaciente = async (
       return;
     }
     const resultado = await pacienteModels.findbyId(id_paciente);
-    if(resultado?.id_paciente === undefined){
-      res.status(400).json({error: "el paciente con ese id no esixte"})
-      return
+    if (resultado?.id_paciente === undefined) {
+      res.status(400).json({ error: "el paciente con ese id no esixte" });
+      return;
     }
 
     const {
@@ -177,8 +177,10 @@ export const updatepaciente = async (
   }
 };
 
-
-export const getPacienteCitas = async (req: Request, res: Response): Promise<void> => {
+export const getPacienteCitas = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   /*
   #swagger.tags = ['Pacientes']
   #swagger.summary = 'Obtener todas las citas de un paciente'
@@ -208,7 +210,7 @@ export const getPacienteCitas = async (req: Request, res: Response): Promise<voi
     if (pacienteConCitas.citas.length === 0) {
       res.status(200).json({
         message: `El paciente "${pacienteConCitas.name_paciente} ${pacienteConCitas.appaterno_paciente}" no tiene citas registradas.`,
-        data: pacienteConCitas
+        data: pacienteConCitas,
       });
       return;
     }
@@ -216,5 +218,28 @@ export const getPacienteCitas = async (req: Request, res: Response): Promise<voi
     res.status(200).json({ data: pacienteConCitas });
   } catch (error) {
     res.status(500).json({ error: "Error al obtener las citas del paciente." });
+  }
+};
+export const deletepacientes = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const idpaciente = Number(req.params.id);
+    if (isNaN(idpaciente)) {
+      res.status(400).json({ menssage: "Id invalido" });
+      return;
+    }
+    const encontradi = await pacienteModels.findbyId(idpaciente);
+    if (!encontradi) {
+      res.status(404).json({ error: "el paciente no encontrado" });
+    }
+    await pacienteModels.deletepacientes(idpaciente);
+
+    res.status(200).json({ message: "se elimino el paciente con exito" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "hubo un promblema al eliminar el paciente " });
   }
 };
