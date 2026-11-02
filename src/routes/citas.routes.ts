@@ -6,6 +6,7 @@ import {
   filtrarestado,
   filtrosestadoresporte,
   getall,
+  getallpaginado,
   updateestado,
 } from "../controllers/citas.controllers";
 import {
@@ -26,8 +27,8 @@ const router: Router = Router();
 router.get(
   "/doctor",
   verifyToken,
-  authorize("GERENCIA", "RECEPCIONISTA","MEDICO"),
-/*   validardatosquery(filtrardoctorschema), */
+  authorize("GERENCIA", "RECEPCIONISTA", "MEDICO"),
+  /*   validardatosquery(filtrardoctorschema), */
   filterdocto,
   /* #swagger.security = [{
             "bearerAuth": []
@@ -37,7 +38,7 @@ router.get(
   "/boss",
   verifyToken,
   authorize("GERENCIA"),
-/*   validardatosquery(filterforbossschema), */
+  /*   validardatosquery(filterforbossschema), */
   filterforboss /* #swagger.security = [{
             "bearerAuth": []
     }] */,
@@ -46,11 +47,12 @@ router.get(
   "/estado",
   verifyToken,
   authorize("GERENCIA"),
-/*   validardatosquery(filtrarestadoschema), */
+  /*   validardatosquery(filtrarestadoschema), */
   filtrarestado /* #swagger.security = [{
             "bearerAuth": []
     }] */,
 );
+router.get("/paginado", getallpaginado);
 router.get(
   "/",
   verifyToken,
@@ -83,7 +85,7 @@ router.get(
   "/reporte",
   verifyToken,
   authorize("GERENCIA"),
-/*   validardatosquery(repoteestadoschema), */
+  /*   validardatosquery(repoteestadoschema), */
   filtrosestadoresporte,
   /* #swagger.security = [{
             "bearerAuth": []

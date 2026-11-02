@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 export interface AuthPayload {
   id: number;
+  name: string;
   email: string;
   role: "RECEPCIONISTA" | "MEDICO" | "GERENCIA";
 }

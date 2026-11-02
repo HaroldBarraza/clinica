@@ -12,32 +12,32 @@ export const usersModels = {
   },
 
   findfilterespecialidad: async (especiadadNombre?: string) => {
-   return await prisma.users.findMany({
-    where: {
-      role: "MEDICO",
-      ...(especiadadNombre && {
+    return await prisma.users.findMany({
+      where: {
+        role: "MEDICO",
+        ...(especiadadNombre && {
+          especialidades: {
+            name_especialidad: {
+              equals: especiadadNombre,
+              mode: "insensitive",
+            },
+          },
+        }),
+      },
+      select: {
+        id_empleado: true,
+        name_empleado: true,
+        appaterno: true,
+        appmaterno: true,
+        email: true,
         especialidades: {
-          name_especialidad: {
-            equals: especiadadNombre,
-            mode: "insensitive",
+          select: {
+            name_especialidad: true,
           },
         },
-      }),
-    },
-    select: {
-      id_empleado: true,              
-      name_empleado: true,
-      appaterno: true,
-      appmaterno: true,
-      email: true,
-      especialidades: {
-        select: {
-          name_especialidad: true,
-        },
+        telefono: true,
       },
-      telefono: true,
-    },
-  });
+    });
   },
   update: async (
     id_empleado: number,
@@ -48,12 +48,48 @@ export const usersModels = {
       data,
     });
   },
-    findbyIdUsers: async (id: number) => {
+  findbyIdUsers: async (id: number) => {
     return await prisma.users.findFirst({
       where: {
         id_empleado: id,
       },
     });
   },
-
+  actualizarPerfil: async (
+    id_empleado: number,
+    datos: {
+      name_empleado?: string;
+      email?: string;
+      telefono?: string;
+      foto_perfil?: string;
+    },
+  ) => {
+    return await prisma.users.update({
+      where: { id_empleado },
+      data: datos,
+      select: {
+        id_empleado: true,
+        name_empleado: true,
+        appaterno: true,
+        appmaterno: true,
+        email: true,
+        telefono: true,
+        role: true,
+        foto_perfil: true,
+      },
+    });
+  },
+  getPerfil: async (id_empleado: number) => {
+    return await prisma.users.findUnique({
+      where: { id_empleado },
+      select: {
+        id_empleado: true,
+        name_empleado: true,
+        email: true,
+        telefono: true,
+        role: true,
+        foto_perfil: true,
+      },
+    });
+  },
 };

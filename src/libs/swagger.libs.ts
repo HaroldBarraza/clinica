@@ -6,7 +6,7 @@ const doc = {
     description: "Documentación automática generada para el bootcamp",
     version: "1.0.0",
   },
-  host: "Localhost:3000",
+  host: "Localhost:3001",
   schemes: ["http"],
   components: {
     securitySchemes: {

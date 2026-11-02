@@ -8,6 +8,7 @@ import routerespecialidad from "./routes/especialidades.routes";
 import routercitas from "./routes/citas.routes";
 import routerauth from "./routes/auth.routes";
 import swaggerRouter from "./routes/swagger.routes";
+import path from "path";
 
 const PORT = process.env.PORT || 3000;
 
@@ -22,7 +23,7 @@ app.use(cors({
 }))
 
 app.use(express.json());
-
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api-docs", swaggerRouter);
 app.use("/auth", routerauth);
 app.use("/users", routeruser);

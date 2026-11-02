@@ -17,36 +17,35 @@ export const citasModels = {
     const datos = await prisma.citas.findMany({
       orderBy: { id_cita: "asc" },
       include: {
-        pacientes:{
-          select:{
-            name_paciente:true,
+        pacientes: {
+          select: {
+            name_paciente: true,
             appaterno_paciente: true,
-            apmaterno_paciente:true,
+            apmaterno_paciente: true,
             genero: true,
-            fecha_nacimiento:true,
-          }
+            fecha_nacimiento: true,
+          },
         },
         estado: {
-          select:{
-            name_estado:true
-          }
+          select: {
+            name_estado: true,
+          },
         },
-        medico:{
-          select:{
+        medico: {
+          select: {
             name_empleado: true,
             appaterno: true,
-            especialidades:true,
-          }
+            especialidades: true,
+          },
         },
-        users:{
-          select:{
+        users: {
+          select: {
             name_empleado: true,
             appaterno: true,
-            role: true
-          }
-        }
+            role: true,
+          },
+        },
       },
-      
     });
     return datos.map((cita) => ({
       ...cita,
@@ -59,7 +58,6 @@ export const citasModels = {
     fecha_inicio: Date,
     fecha_final: Date,
   ) => {
-
     const datos = await prisma.citas.findMany({
       where: {
         medico: {
@@ -109,7 +107,7 @@ export const citasModels = {
           especialidades: {
             name_especialidad: {
               equals: especialidad,
-              mode: "insensitive"
+              mode: "insensitive",
             },
           },
         },
@@ -234,11 +232,68 @@ export const citasModels = {
       total: Number(row.total),
     }));
   },
-    findbyIdCitas: async (id: number) => {
+  findbyIdCitas: async (id: number) => {
     return await prisma.citas.findFirst({
       where: {
         id_cita: id,
       },
     });
+  },
+  findallPaginado: async (
+    pagina: number,
+    porPagina: number,
+    id_estado?: number,
+  ) => {
+    const where = id_estado !== undefined ? { id_estado } : {};
+    const skip = (pagina - 1) * porPagina;
+
+    const [total, datos] = await Promise.all([
+      prisma.citas.count({ where }),
+      prisma.citas.findMany({
+        where,
+        skip,
+        take: porPagina,
+        orderBy: { fecha_de_cita: "desc" },
+        include: {
+          pacientes: {
+            select: {
+              name_paciente: true,
+              appaterno_paciente: true,
+              apmaterno_paciente: true,
+              genero: true,
+              fecha_nacimiento: true,
+            },
+          },
+          estado: { select: { name_estado: true } },
+          medico: {
+            select: {
+              name_empleado: true,
+              appaterno: true,
+              especialidades: true,
+            },
+          },
+          users: {
+            select: {
+              name_empleado: true,
+              appaterno: true,
+              role: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+
+    return {
+      data: datos.map((cita) => ({
+        ...cita,
+        fecha_de_cita: formatDate(cita.fecha_de_cita),
+        hora_de_cita: formatTime(cita.hora_de_cita),
+      })),
+      total,
+      pagina,
+      totalPaginas,
+    };
   },
 };

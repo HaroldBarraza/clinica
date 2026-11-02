@@ -69,9 +69,9 @@ example: '2026-12-30'
       fechainicio,
       fechafinal,
     );
-    if(resultado.length === 0 ){
-      res.status(200).json({message:"no tiene citas programadas"})
-      return
+    if (resultado.length === 0) {
+      res.status(200).json({ message: "no tiene citas programadas" });
+      return;
     }
     res.json({ data: resultado });
   } catch (error) {
@@ -118,22 +118,22 @@ export const filterforboss = async (
     }
 
     const existe = await prisma.especialidades.findFirst({
-      where:{
-        name_especialidad:{
+      where: {
+        name_especialidad: {
           equals: especialidad,
-          mode: "insensitive"
-        }
-      }
-    })
+          mode: "insensitive",
+        },
+      },
+    });
 
-    if(!existe){
-      res.status(400).json({error: "la especialidad no exite"})
-      return
+    if (!existe) {
+      res.status(400).json({ error: "la especialidad no exite" });
+      return;
     }
     const resultado = await citasModels.filterforboss(especialidad, fecha);
-    if(resultado.length === 0){
-      res.status(200).json({message: "no hay citas para esta especialidad"})
-      return
+    if (resultado.length === 0) {
+      res.status(200).json({ message: "no hay citas para esta especialidad" });
+      return;
     }
     res.json({ data: resultado });
   } catch (error) {
@@ -171,9 +171,9 @@ export const filtrarestado = async (
         .json({ error: "el formato la hora es invalido YYYY-MM-DD" });
     }
     const resultado = await citasModels.filtrarcitasestado(fechainicio);
-    if(resultado.total === 0){
-      res.json({message: "no se encontraron citas "})
-      return
+    if (resultado.total === 0) {
+      res.json({ message: "no se encontraron citas " });
+      return;
     }
     res.json({ data: resultado });
   } catch (error) {
@@ -276,7 +276,7 @@ export const updateestado = async (
       res.status(400).json({ error: "la cita con ese id no existe" });
       return;
     }
-    const {estado} = req.body
+    const { estado } = req.body;
     console.log(`esste es e estado ${estado}, este es el id ${id}`);
     const citaActualizada = await citasModels.updateestado(id, estado);
     res.json({ data: citaActualizada });
@@ -329,12 +329,61 @@ export const filtrosestadoresporte = async (
     }
 
     const resultado = await citasModels.filtrarporespecialidad(inicio, final);
-    if(resultado.length === 0){
-      res.json({message: "no hay citas existentes"})
-      return
+    if (resultado.length === 0) {
+      res.json({ message: "no hay citas existentes" });
+      return;
     }
     res.json({ data: resultado });
   } catch (error) {
     res.status(500).json({ message: "error al filtrar por estado" });
+  }
+};
+export const getallpaginado = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  /*
+#swagger.tags = ['Citas']
+#swagger.summary = 'Obtiene citas paginadas'
+#swagger.parameters['pagina'] = { in: 'query', type: 'integer', example: 1 }
+#swagger.parameters['porPagina'] = { in: 'query', type: 'integer', example: 10 }
+#swagger.parameters['estado'] = { in: 'query', type: 'string', example: 'Programada' }
+*/
+
+  try {
+    const paginaRaw = Number(req.query.pagina);
+    const porPaginaRaw = Number(req.query.porPagina);
+    const estadoParam = req.query.estado as string | undefined;
+
+    const pagina = Math.max(1, isNaN(paginaRaw) ? 1 : paginaRaw);
+    const porPagina = Math.min(
+      50,
+      Math.max(1, isNaN(porPaginaRaw) ? 10 : porPaginaRaw),
+    );
+
+    let id_estado: number | undefined;
+    if (estadoParam && estadoParam !== "Todos") {
+      const mapEstados: Record<string, number> = {
+        Programada: 1,
+        Completada: 2,
+        Cancelada: 3,
+      };
+      id_estado = mapEstados[estadoParam];
+      if (!id_estado) {
+        res.status(400).json({ error: "Estado inválido" });
+        return;
+      }
+    }
+
+    const resultado = await citasModels.findallPaginado(
+      pagina,
+      porPagina,
+      id_estado,
+    );
+
+    res.json(resultado);
+  } catch (error) {
+    console.error("Error en getallpaginado:", error);
+    res.status(500).json({ message: "error al obtener citas paginadas" });
   }
 };
